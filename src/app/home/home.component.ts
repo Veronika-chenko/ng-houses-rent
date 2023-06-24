@@ -14,8 +14,29 @@ import { IHousingLocation } from '../housinglocation';
 export class HomeComponent {
   housingLocationList: IHousingLocation[] = [];
   housingService: HousingService = inject(HousingService);
+  filteredLocationList: IHousingLocation[] = [];
 
   constructor() {
-    this.housingLocationList = this.housingService.getAllHousingLocations();
+    // this.housingLocationList = this.housingService.getAllHousingLocations();
+    // this.filteredLocationList = this.housingLocationList;
+    this.housingService
+      .getAllHousingLocations()
+      .then((housingLocationList: IHousingLocation[]) => {
+        this.housingLocationList = housingLocationList;
+        this.filteredLocationList = housingLocationList;
+      });
+  }
+
+  filterResults(text: string) {
+    if (!text) {
+      this.filteredLocationList = this.housingLocationList;
+    }
+
+    this.filteredLocationList = this.housingLocationList.filter(
+      (housinLocation) =>
+        housinLocation?.city
+          .toLocaleLowerCase()
+          .includes(text.toLocaleLowerCase())
+    );
   }
 }
